@@ -73,6 +73,8 @@ def purchasePlaces():
 
     if places_required > 12 :
         flash('Error : Too many places requested', 'error')
+    elif places_availables < 0 :
+        flash('Error: Not enough places!', 'error')
     elif cost_in_points < 0:
         flash('Error : Not enough points', 'error')
     else :
