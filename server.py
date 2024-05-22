@@ -34,9 +34,10 @@ def showSummary():
 
     if matching_clubs:
         club = matching_clubs[0]
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return render_template('welcome.html', club=club, competitions=competitions), 200
     else:
-        abort(404)
+        flash('Wrong email', 'error')
+        return render_template('index.html')
 
 
 @app.route('/book/<competition>/<club>')
@@ -46,18 +47,38 @@ def book(competition,club):
     if foundClub and foundCompetition:
         return render_template('booking.html',club=foundClub,competition=foundCompetition)
     else:
-        flash("Something went wrong-please try again")
+        flash("Something went wrong-please try again", 'error')
         return render_template('welcome.html', club=club, competitions=competitions)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
 def purchasePlaces():
-    competition = [c for c in competitions if c['name'] == request.form['competition']][0]
-    club = [c for c in clubs if c['name'] == request.form['club']][0]
-    placesRequired = int(request.form['places'])
-    competition['numberOfPlaces'] = int(competition['numberOfPlaces'])-placesRequired
-    flash('Great-booking complete!')
+    club_request = request.form['club']
+    competition_request = request.form['competition']
+
+    matching_club = [c for c in clubs if c['name'] == club_request]
+    matching_competition = [comp for comp in competitions if comp['name'] == competition_request]
+
+    club = None
+    competition = None
+
+    if matching_club:
+        club = matching_club[0]
+    if matching_competition:
+        competition = matching_competition[0]
+   
+    places_required = int(request.form['places'])
+    places_availables= int(competition['numberOfPlaces'])-places_required
+    cost_in_points = int(club['points']) - places_required
+
+    if places_required > 12 :
+        flash('Error : Too many places requested', 'error')
+    else :
+        club['points'] =  cost_in_points
+        competition['numberOfPlaces'] = places_availables
+        flash(f'Great booking complete! {places_required} purchased!', 'success')
     return render_template('welcome.html', club=club, competitions=competitions)
+
 
 
 # TODO: Add route for points display
