@@ -71,8 +71,8 @@ def purchasePlaces():
     places_availables= int(competition['numberOfPlaces'])-places_required
     cost_in_points = int(club['points']) - places_required
 
-    if places_required > 12 :
-        flash('Error : Too many places requested', 'error')
+    if cost_in_points < 0:
+        flash('Error : Not enough points', 'error')
     else :
         club['points'] =  cost_in_points
         competition['numberOfPlaces'] = places_availables
