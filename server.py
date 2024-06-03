@@ -1,5 +1,6 @@
 import json
-from flask import Flask,render_template,request,redirect,flash,url_for, abort
+from flask import Flask,render_template,request,redirect,flash,url_for, make_response
+from datetime import datetime
 
 
 
@@ -34,10 +35,11 @@ def showSummary():
 
     if matching_clubs:
         club = matching_clubs[0]
-        return render_template('welcome.html', club=club, competitions=competitions), 200
+        flash('Email found', 'success')
+        return make_response(render_template('welcome.html', club=club, competitions=competitions), 200)
     else:
         flash('Wrong email', 'error')
-        return render_template('index.html')
+        return make_response(render_template('index.html'), 400)
 
 
 @app.route('/book/<competition>/<club>')
@@ -45,10 +47,10 @@ def book(competition,club):
     foundClub = [c for c in clubs if c['name'] == club][0]
     foundCompetition = [c for c in competitions if c['name'] == competition][0]
     if foundClub and foundCompetition:
-        return render_template('booking.html',club=foundClub,competition=foundCompetition)
+        return make_response(render_template('booking.html',club=foundClub,competition=foundCompetition),200)
     else:
         flash("Something went wrong-please try again", 'error')
-        return render_template('welcome.html', club=club, competitions=competitions)
+        return make_response(render_template('welcome.html', club=club, competitions=competitions), 400)
 
 
 @app.route('/purchasePlaces',methods=['POST'])
@@ -59,33 +61,58 @@ def purchasePlaces():
     matching_club = [c for c in clubs if c['name'] == club_request]
     matching_competition = [comp for comp in competitions if comp['name'] == competition_request]
 
-    club = None
-    competition = None
+    if not matching_club or not matching_competition : 
+        flash("ERROR: No matching club or matching competition", "error")
+        return make_response(render_template('index.html'), 404)
 
-    if matching_club:
-        club = matching_club[0]
-    if matching_competition:
-        competition = matching_competition[0]
+    club = matching_club[0]
+    competition = matching_competition[0]
+
+    try:
+        competition_date = datetime.strptime(competition['date'], '%Y-%m-%d %H:%M:%S')
+    except ValueError: 
+        flash("Error: Invalid competition date format.", "error")
+        return make_response(render_template('welcome.html', clubs=clubs, competitions=competitions), 400)
+
+    if competition_date < datetime.now():
+        flash('Error: Competition is in the past.', 'error')
+        return make_response(render_template('welcome.html', club=club, competitions=competitions), 400)
    
     places_required = int(request.form['places'])
     places_availables= int(competition['numberOfPlaces'])-places_required
-    cost_in_points = int(club['points']) - places_required
+    remaining_points = int(club['points']) - places_required
 
-    if places_required > 12 :
-        flash('Error : Too many places requested', 'error')
-    elif places_availables < 0 :
-        flash('Error: Not enough places!', 'error')
-    elif cost_in_points < 0:
-        flash('Error : Not enough points', 'error')
+    error_message, category = validate_booking(places_required, places_availables, remaining_points)
+    if error_message:
+        flash(error_message, category)
+        return make_response(render_template('welcome.html', club=club, competitions = competitions), 400)
     else :
-        club['points'] =  cost_in_points
+        club['points'] =  remaining_points
         competition['numberOfPlaces'] = places_availables
         flash(f'Great booking complete! {places_required} purchased!', 'success')
-    return render_template('welcome.html', club=club, competitions=competitions)
+    return make_response(render_template('welcome.html', club=club, competitions=competitions),200)
+
+def validate_booking(places_required, places_availables, remaining_points):
+
+    if places_required > 12:
+        return 'Error : Too many places requested', 'error'
+    elif places_availables < 0:
+        return 'Error: Not enough places!', 'error'
+    elif remaining_points < 0:
+        return 'Error : Not enough points', 'error'
+    else:
+        return None, 'success'
+
+@app.template_filter('to_datetime')
+def to_datetime_filter(value):
+    return datetime.strptime(value, '%Y-%m-%d %H:%M:%S')
+
+@app.context_processor
+def inject_datetime():
+    return {'datetime': datetime}
 
 
-
-# TODO: Add route for points display
+    
 
 
 @app.route('/logout')

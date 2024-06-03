@@ -1,20 +1,12 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <link rel="stylesheet" href="static/style.css">
-
-    <title>Booking for {{competition['name']}} || GUDLFT</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block title %}Booking for {{competition['name']}} || GUDLFT {% endblock %}
+{% block content %}
     <h2>{{competition['name']}}</h2>
-    Places available: {{competition['numberOfPlaces']}}
+    <p>Places available: {{competition['numberOfPlaces']}}</p>
     <form action="/purchasePlaces" method="post">
         <input type="hidden" name="club" value="{{club['name']}}">
         <input type="hidden" name="competition" value="{{competition['name']}}">
-        <label for="places">How many places?</label><input type="number" name="places" id="" min=1 max="{{ competition['numberOfPlaces'] }}" required/>
+        <label for="places">How many places?</label><input type="number" name="places" id="" min=1 max="{{ [competition['numberOfPlaces'] | int, 12] | min }}" required/>
         <button type="submit">Book</button>
     </form>
-</body>
-</html>
+{% endblock %}
