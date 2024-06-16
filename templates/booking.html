@@ -11,7 +11,7 @@
             <label for="places" class="form-label">How many places?</label>
             <input type="number" class="form-control" name="places" id="places" min="1" max="{{ [competition['numberOfPlaces'] | int, 12] | min }}" required/>
         </div>
-        <button type="submit" class="btn btn-primary">Book</button>
+        <button type="submit" class="btn btn-primary" id="booking_button">Book</button>
     </form>
 </div>
 {% endblock %}
