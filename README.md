@@ -1,51 +1,123 @@
-# gudlift-registration
+# Gudlift Registration
 
-1. Why
+## 1. Why
 
+This project serves as a proof of concept (POC) to demonstrate a lightweight version of our competition booking platform. The goal is to keep the implementation as simple as possible and use user feedback to iterate and improve the platform.
 
-    This is a proof of concept (POC) project to show a light-weight version of our competition booking platform. The aim is the keep things as light as possible, and use feedback from the users to iterate.
+## 2. Getting Started
 
-2. Getting Started
+This project utilizes the following technologies:
 
-    This project uses the following technologies:
+- **Python v3.x+**
+- **[Flask](https://flask.palletsprojects.com/en/1.1.x/)**: Flask is chosen over Django because it allows for adding only the necessary components, making it a more lightweight framework.
+- **[Virtual environment](https://virtualenv.pypa.io/en/stable/installation.html)**: This ensures that the correct packages are installed without interfering with the global Python environment on your machine. Make sure to have this installed globally before proceeding.
 
-    * Python v3.x+
+## 3. Installation
 
-    * [Flask](https://flask.palletsprojects.com/en/1.1.x/)
+1. **Clone the repository** and navigate into the project directory.
 
-        Whereas Django does a lot of things for us out of the box, Flask allows us to add only what we need. 
-     
+2. **Set up a virtual environment**:
+   - For **Linux/macOS**:
+     ```bash
+     python3 -m venv venv
+     ```
+   - For **Windows (Command Prompt)**:
+     ```cmd
+     python -m venv venv
+     ```
+   - For **Windows (PowerShell)**:
+     ```powershell
+     python -m venv venv
+     ```
 
-    * [Virtual environment](https://virtualenv.pypa.io/en/stable/installation.html)
+3. **Activate the virtual environment**:
+   - For **Linux/macOS**:
+     ```bash
+     source venv/bin/activate
+     ```
+   - For **Windows (Command Prompt)**:
+     ```cmd
+     venv\Scripts\activate
+     ```
+   - For **Windows (PowerShell)**:
+     ```powershell
+     .\venv\Scripts\Activate
+     ```
 
-        This ensures you'll be able to install the correct packages without interfering with Python on your machine.
+   You should see the command prompt change to indicate the virtual environment is active. To deactivate, simply run:
+   ```bash
+   deactivate
+   ```
+4. **Install required packages**
+    ```
+    bash
+    pip install -r requirements.txt
+    ```
+    If you install new packages, update the requirements.txt file:
+    ```
+    pip freeze > requirements.txt
+    ```
+5. **Set the Flask application environment variable to server.py.**
+    The method varies by operating system:
+    - For Linux/MacOS :
+    ```
+    bash
+    export FLASK_APP=server.py
+    ```
+    - For Windows (Command Prompt):
+    ```
+    bash
+    set FLASK_APP=server.py
+    ```
+    - For Windows (PowerShell):
+    ```
+        $env:FLASK_APP = "server.py"
+    ```
+6. **Run the application**
+    ``` flask run ```
+    or
+    ```python -m flask run```
+    The app will provide an address you can open in your browser to access the application.
 
-        Before you begin, please ensure you have this installed globally. 
+## 4. Current Setup
+    The application currently uses JSON files instead of a database to manage data. The main files are:
 
+   - competitions.json: Contains a list of competitions.
+   - clubs.json: Contains a list of clubs with relevant information, including accepted email addresses for login.
+   
+## 5. Testing
+    You are free to use any testing framework you prefer. The key is to demonstrate the tests you are using. Additionally, include the following tools to enhance your testing:
 
-3. Installation
+    - pytest: A framework that makes it easy to write simple and scalable test cases.
+    - Coverage: A tool to show how well the code is tested.
+    
+    To install pytest and coverage, you can add them to your requirements.txt file or install them directly:
+    ```pip install pytest coverage```
 
-    - After cloning, change into the directory and type <code>virtualenv .</code>. This will then set up a a virtual python environment within that directory.
+    Run your tests using:
+    ```pytest tests/```
 
-    - Next, type <code>source bin/activate</code>. You should see that your command prompt has changed to the name of the folder. This means that you can install packages in here without affecting affecting files outside. To deactivate, type <code>deactivate</code>
+    Measure test coverage using:
+    ``` coverage run -m pytest tests/
+        coverage report
+        coverage xml
+    ```
+    Run performance tests using Locust:
+    ```
+        locust --headless -u 10 -r 1 --run-time 1m -L DEBUG --only-summary --csv=locust_result
+    ```
 
-    - Rather than hunting around for the packages you need, you can install in one step. Type <code>pip install -r requirements.txt</code>. This will install all the packages listed in the respective file. If you install a package, make sure others know by updating the requirements.txt file. An easy way to do this is <code>pip freeze > requirements.txt</code>
+## 6. Analyzing Result
+    If you want to visualize the results more easily, you can use the following scripts: 
 
-    - Flask requires that you set an environmental variable to the python file. However you do that, you'll want to set the file to be <code>server.py</code>. Check [here](https://flask.palletsprojects.com/en/1.1.x/quickstart/#a-minimal-application) for more details
+    - For coverage :
+    ```
+        python analyze_coverage.py
+    ```
+    - For Locust :
+    ```
+        python analyze_locust_result.py
+    ```
+By following these steps, you should be able to set up, run, and test the Gudlift registration application effectively.
 
-    - You should now be ready to test the application. In the directory, type either <code>flask run</code> or <code>python -m flask run</code>. The app should respond with an address you should be able to go to using your browser.
-
-4. Current Setup
-
-    The app is powered by [JSON files](https://www.tutorialspoint.com/json/json_quick_guide.htm). This is to get around having a DB until we actually need one. The main ones are:
-     
-    * competitions.json - list of competitions
-    * clubs.json - list of clubs with relevant information. You can look here to see what email addresses the app will accept for login.
-
-5. Testing
-
-    You are free to use whatever testing framework you like-the main thing is that you can show what tests you are using.
-
-    We also like to show how well we're testing, so there's a module called 
-    [coverage](https://coverage.readthedocs.io/en/coverage-5.1/) you should add to your project.
 

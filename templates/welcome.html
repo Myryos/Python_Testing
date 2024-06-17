@@ -27,11 +27,11 @@
                 {% set comp_date = comp['date'] | to_datetime %}
                 {% if current_date < comp_date %}
                     <li class="list-group-item">
-                        <h4 class="h4">{{comp['name']}}</h4>
+                        <h4 class="h4" id="{{comp['name']}}">{{comp['name']}}</h4>
                         <p>Date: {{comp['date']}}</p>
-                        <p>Places available: <span class="badge bg-primary">{{competition['numberOfPlaces']}}</span></p>
+                        <p>Places available: <span class="badge bg-primary">{{comp['numberOfPlaces']}}</span></p>
                         {% if comp['numberOfPlaces']|int > 0 and club['points']|int > 0 %}
-                            <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}" class="btn btn-success" id="competition_btn">Book Places</a>
+                            <a href="{{ url_for('book', competition=comp['name'], club=club['name']) }}" class="btn btn-success">Book Places</a>
                         {% endif %}
                     </li>
                 {% endif %}
