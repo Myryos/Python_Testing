@@ -18,39 +18,40 @@ This project utilizes the following technologies:
 
 2. **Set up a virtual environment**:
    - For **Linux/macOS**:
-     ```bash
+     ```
      python3 -m venv venv
      ```
    - For **Windows (Command Prompt)**:
-     ```cmd
+     ```
      python -m venv venv
      ```
    - For **Windows (PowerShell)**:
-     ```powershell
+     ```
      python -m venv venv
      ```
 
 3. **Activate the virtual environment**:
    - For **Linux/macOS**:
-     ```bash
+     ```
      source venv/bin/activate
      ```
    - For **Windows (Command Prompt)**:
-     ```cmd
+     ```
      venv\Scripts\activate
      ```
    - For **Windows (PowerShell)**:
-     ```powershell
+     ```
      .\venv\Scripts\Activate
      ```
 
    You should see the command prompt change to indicate the virtual environment is active. To deactivate, simply run:
-   ```bash
+   ```
    deactivate
    ```
+   This command works for all operating systems, including Windows, macOS, and Linux.
+
 4. **Install required packages**
     ```
-    bash
     pip install -r requirements.txt
     ```
     If you install new packages, update the requirements.txt file:
@@ -61,12 +62,10 @@ This project utilizes the following technologies:
     The method varies by operating system:
     - For Linux/MacOS :
     ```
-    bash
     export FLASK_APP=server.py
     ```
     - For Windows (Command Prompt):
     ```
-    bash
     set FLASK_APP=server.py
     ```
     - For Windows (PowerShell):
@@ -86,37 +85,56 @@ This project utilizes the following technologies:
    - clubs.json: Contains a list of clubs with relevant information, including accepted email addresses for login.
    
 ## 5. Testing
-    You are free to use any testing framework you prefer. The key is to demonstrate the tests you are using. Additionally, include the following tools to enhance your testing:
+    We are utilizing the following tools to enhance our testing:
 
-    - pytest: A framework that makes it easy to write simple and scalable test cases.
+    - Pytest: A framework that makes it easy to write simple and scalable test cases.
     - Coverage: A tool to show how well the code is tested.
-    
-    To install pytest and coverage, you can add them to your requirements.txt file or install them directly:
-    ```pip install pytest coverage```
+    - Locust: An open-source load testing tool that allows you to define user behavior and performance tests using Python code.
 
     Run your tests using:
     ```pytest tests/```
 
+    or 
+
+    ``` python -m pytest tests/```
+
     Measure test coverage using:
-    ``` coverage run -m pytest tests/
-        coverage report
-        coverage xml
+    ``` 
+        coverage run -m pytest tests/
+        coverage report server.py
+        coverage xml server.py
     ```
     Run performance tests using Locust:
-    ```
-        locust --headless -u 10 -r 1 --run-time 1m -L DEBUG --only-summary --csv=locust_result
-    ```
+      - Headless Mode
+        For Headless Mode run the commands below :
+        ``` cd tests ```
+        then :
+        ```
+            locust --headless -u 10 -r 1 --run-time 1m -L DEBUG --only-summary --csv="reports/locust/locust_result"
+        ```
+        `--headless: Runs Locust in headless mode.
+        `-u 10: Simulates 10 users.
+        `-r 1: Spawns 1 user per second.
+        `--run-time 1m: Runs the test for 1 minute.
+        `--only-summary: Only shows a summary of the results.
+        `--csv="reports/locust/locust_result": Generates an csv .
+
+      - Interactive Mode:
+        For Interactive Mode run :
+        ``` locust ```
+        - Open your browser and navigate to `http://localhost:8089`.
+        - Configure the number of users and the spawn rate, then start the test.
 
 ## 6. Analyzing Result
     If you want to visualize the results more easily, you can use the following scripts: 
 
     - For coverage :
     ```
-        python analyze_coverage.py
+        python utils/analyze_coverage.py
     ```
     - For Locust :
     ```
-        python analyze_locust_result.py
+        python utils/analyze_locust_result.py
     ```
 By following these steps, you should be able to set up, run, and test the Gudlift registration application effectively.
 

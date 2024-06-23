@@ -43,11 +43,11 @@ def test_booking_page(browser):
 
     assert "Welcome" in browser.page_source
 
-    competition_id = "Fall Classic"  # Remplacez par l'ID réel de votre compétition
+    competition_name = "Fall Classic"  # Remplacez par l'ID réel de votre compétition
+    xpath_expression = f"//h4[contains(text(), '{competition_name}')]"
 
     # Trouver l'élément <h4> qui a cet ID
-    comp_h4 = browser.find_element(By.ID, competition_id)
-
+    comp_h4 = browser.find_element(By.XPATH, xpath_expression)
     # Trouver le bouton "Book Places" qui est un enfant de l'élément <h4>
     book_button = comp_h4.find_element(
         By.XPATH, "./following-sibling::a[contains(@class, 'btn-success')]"
@@ -86,10 +86,11 @@ def test_integration_selenium(browser):
     # Assert that the welcome page is displayed
     assert "Welcome" in browser.page_source
 
-    competition_id = "Fall Classic"  # Remplacez par l'ID réel de votre compétition
+    competition_name = "Fall Classic"  # Remplacez par l'ID réel de votre compétition
+    xpath_expression = f"//h4[contains(text(), '{competition_name}')]"
 
     # Trouver l'élément <h4> qui a cet ID
-    comp_h4 = browser.find_element(By.ID, competition_id)
+    comp_h4 = browser.find_element(By.XPATH, xpath_expression)
 
     # Trouver le bouton "Book Places" qui est un enfant de l'élément <h4>
     book_button = comp_h4.find_element(
